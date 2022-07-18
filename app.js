@@ -64,7 +64,7 @@ app.get('/contact', (req, res) => {
         nama: "Muhammad Adityo Fathur Rahim",
         title: 'Contact Page',
         cont,
-        msg: req.flash('msg'),
+        msg: req.flash('msg'),          //Parameter untuk menerima pesan flash message
     })
 })
 
