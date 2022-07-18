@@ -23,7 +23,7 @@ const loadContact = () => {
 
 const checkDuplicate = (name) => {
     const contacts = loadContact();
-    return contacts.find((contact) => contact.name === name);
+    return contacts.find((contact) => contact.name.toLowerCase() === name.toLowerCase());
 }
 
 //Fungsi untuk menampilkan detail data contact berdasarkan nama
@@ -55,23 +55,19 @@ const saveContact = (name, email, mobile) => {
             if (vldMobile == true) {
                 contacts.push(contact);
                 fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
-                console.log('Terima kasih sudah memasukkan data!');
             }
             //Apabila input variabel vldMobile masih invalid 
             else {
-                console.log('Data mobile phone yang dimasukkan invalid! Harap check kembali sesuai format mobile phone Indonesia');
                 return false;
             };
         }
         //Apabila input variabel vldEmail masih invalid 
         else {
-            console.log('Data email yang dimasukkan invalid!');
             return false;
         };
     }
     //Apabila ditemukan duplikasi isi name pada array
     else {
-        console.log('Data name yang dimasukkan sudah ada!');
         return false;
     };
 };
@@ -85,7 +81,6 @@ const updateContact = (findName, name, email, mobile) => {
     const idxContact = contacts.findIndex((idx => idx.name.toLowerCase() == findName.toLowerCase()));    
     //Pengkondisian bila data nama contact yang dicari tidak ada
     if (!findContact) {
-        // console.log(`Data dengan nama "${findName}" tidak ditemukan!`);
         return false;
     }
     
@@ -95,13 +90,11 @@ const updateContact = (findName, name, email, mobile) => {
         const duplicateName = contacts.find((contact) => contact.name.toLowerCase() === name.toLowerCase());
         if (duplicateName) {
             if (findName !== name) {
-                // console.log(`Data dengan nama "${name}" sudah ada! Coba kembali!`);
                 return false;   
             }
         }
         //Simpan input data nama baru kedalam object dengan index yang dicari
         contacts[idxContact].name = name;
-        // console.log(contacts);
     }
 
     //Pengkondisian input data email baru
@@ -130,21 +123,15 @@ const updateContact = (findName, name, email, mobile) => {
     }
 
     //Pengkondisian bila tidak ada input data mobile baru
-    if (!mobile) {
-        // console.log(contacts);
-        // console.log(`Data Contact dengan nama ${findName} telah diupdate!`);
-    } else {
+    if (mobile) {
         //Jika data mobile diinput maka data mobile akan dirubah
         //Memvalidasi inputan data mobile baru sesuai format Indonesia
         const vldMobile = validator.isMobilePhone(mobile, 'id-ID');
         if (vldMobile == false) {
-            // console.log('Data mobile phone yang dimasukkan invalid!');
             return false;
         }
         //Simpan input data mobile baru kedalam object dengan index yang dipilih
         contacts[idxContact].mobile = mobile;
-        // console.log(contacts);
-        // console.log(`Data Contact dengan nama ${findName} telah diupdate!`);
     }
 
     //Menyimpan array contact yang telah diupdate ke file contacts.json
@@ -163,10 +150,7 @@ const deleteContact = (name) => {
         var newContacts = contacts.filter((contact) => contact.name.toLowerCase() !== name.toLowerCase());
         //Menyimpan array data contact yang baru ke file contact.json
         fs.writeFileSync('data/contacts.json', JSON.stringify(newContacts));
-        // console.log(contacts);
-        // console.log(`Data contact dengan nama: ${name} telah dihapus!`);
     } else {    //Apabila data contact berdasarkan nama yang diinput tidak ditemukan
-        // console.log('Data yang akan dihapus tidak ditemukan!');
         return false;
     }
 }

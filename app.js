@@ -118,13 +118,16 @@ app.get('/contact/edit/:name', (req, res) => {
 
 //Menerima data input dari form Edit data contact
 app.post('/edit/:name', [
-    body('name').custom((value) => {
+    body('name').custom((value, {req}) => {
         const duplikat = contacts.checkDuplicate(value);
         console.log(duplikat.name);
         if (duplikat) {
-            // if (duplikat.name != value) {
+            // Pengkondisian input nama baru yang tidak sama dengan parameter namun duplikat dengan data nama yang lain
+            // Sehingga apabila input nama baru yang duplikat namun masih sama dengan paramater (data itu sendiri)
+            // maka fungsi dibawah tidak dijalankan
+            if (req.params.name != value) {
                 throw new Error('Contact name is already used!');
-            // }
+            }
         }
         return true;
     }),
@@ -132,6 +135,7 @@ app.post('/edit/:name', [
     check('mobile', 'Mobile Phone is invalid!').isMobilePhone('id-ID')
 ], (req, res) => {
     const errors = validationResult(req);
+    // Memanggil kembali object dari data yang dipilih
     const cont = contacts.detailContact(req.params.name);
     // console.log(errors)
     if (!errors.isEmpty()) {
